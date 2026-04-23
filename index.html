@@ -4,20 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CS Flashcards</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300..700;1,300..700&family=Zen+Old+Mincho&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f;
-    --surface: #13131a;
-    --surface2: #1c1c28;
+    --bg:#f9f9fb;
+    --surface: #00000000;
+    --surface2: #1c1c2800;
     --border: #2a2a3d;
-    --accent: #7c3aed;
-    --accent2: #06b6d4;
+    --accent: #000000;
+    --accent2: #5e4646;
     --correct: #10b981;
     --wrong: #ef4444;
-    --text: #e2e8f0;
-    --muted: #64748b;
-    --card-bg: #16161f;
+    --text: #000000;
+    --muted: #2f2a2c;
+    --card-bg: #f9dede17;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -25,7 +29,7 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Syne', sans-serif;
+    font-family: 'Cormorant', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
   }
@@ -65,14 +69,14 @@
     font-weight: 800;
     line-height: 1;
     letter-spacing: -2px;
-    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    background: linear-gradient(135deg, #06b6d4,  #cd5656);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .menu-header p {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Zen Old Mincho', monospace;
     font-size: 0.75rem;
     color: var(--muted);
     margin-top: 0.75rem;
@@ -85,7 +89,7 @@
     gap: 0.5rem;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: px;
     padding: 0.4rem;
     margin-bottom: 2rem;
   }
@@ -94,10 +98,10 @@
     flex: 1;
     padding: 0.6rem 1.2rem;
     border: none;
-    border-radius: 8px;
+    border-radius: 0px;
     background: transparent;
     color: var(--muted);
-    font-family: 'Syne', sans-serif;
+    font-family: 'Cormorant', sans-serif;
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
@@ -105,7 +109,7 @@
   }
 
   .mode-tab.active {
-    background: var(--accent);
+    background: #b15b5b;
     color: white;
   }
 
@@ -120,7 +124,7 @@
   .level-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: 0px;
     padding: 1.5rem;
     cursor: pointer;
     transition: all 0.25s;
@@ -143,7 +147,7 @@
   .level-card * { position: relative; z-index: 1; }
 
   .level-num {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Zen Old Mincho', monospace;
     font-size: 0.7rem;
     color: var(--accent2);
     letter-spacing: 3px;
@@ -158,7 +162,7 @@
   }
 
   .level-count {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Zen Old Mincho', monospace;
     font-size: 0.75rem;
     color: var(--muted);
   }
@@ -200,7 +204,7 @@
     border-radius: 8px;
     padding: 0.5rem 1rem;
     color: var(--text);
-    font-family: 'Syne', sans-serif;
+    font-family: 'Cormorant', sans-serif;
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
@@ -220,7 +224,7 @@
   }
 
   .study-progress {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Zen Old Mincho', monospace;
     font-size: 0.7rem;
     color: var(--muted);
     margin-top: 0.2rem;
@@ -295,14 +299,27 @@
   }
 
   .card-tag {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Zen Old Mincho', monospace;
     font-size: 0.65rem;
     letter-spacing: 3px;
     text-transform: uppercase;
     color: var(--accent2);
     margin-bottom: 1.5rem;
     padding: 0.3rem 0.8rem;
-    background: rgba(6,182,212,0.1);
+    background: rgba(142, 85, 109, 0.1);
+    border-radius: 20px;
+    border: 1px solid rgba(6,182,212,0.2);
+  }
+
+  .card-tag-answer {
+    font-family: 'Zen Old Mincho', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 1.5rem;
+    padding: 0.3rem 0.8rem;
+    background: rgba(85, 124, 142, 0.1);
     border-radius: 20px;
     border: 1px solid rgba(6,182,212,0.2);
   }
@@ -322,14 +339,14 @@
   }
 
   .card-back-sub {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Zen Old Mincho', monospace;
     font-size: 0.75rem;
     color: var(--muted);
     margin-top: 0.75rem;
   }
 
   .flip-hint {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Zen Old Mincho', monospace;
     font-size: 0.65rem;
     color: var(--muted);
     margin-top: 1rem;
@@ -379,7 +396,7 @@
   }
 
   .swipe-label span {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Zen Old Mincho', monospace;
     font-size: 0.65rem;
     color: var(--muted);
     letter-spacing: 1px;
@@ -404,7 +421,7 @@
   }
 
   .results-header p {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Zen Old Mincho', monospace;
     font-size: 0.75rem;
     color: var(--muted);
     margin-top: 0.5rem;
@@ -445,7 +462,7 @@
   }
 
   .score-sub {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Zen Old Mincho', monospace;
     font-size: 0.6rem;
     color: var(--muted);
     letter-spacing: 1px;
@@ -475,7 +492,7 @@
   .stat-val.red { color: var(--wrong); }
 
   .stat-label {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Zen Old Mincho', monospace;
     font-size: 0.65rem;
     color: var(--muted);
     letter-spacing: 1px;
@@ -495,7 +512,7 @@
     border-radius: 10px;
     padding: 0.9rem 2rem;
     color: white;
-    font-family: 'Syne', sans-serif;
+    font-family: 'Cormorant', sans-serif;
     font-size: 0.9rem;
     font-weight: 700;
     cursor: pointer;
@@ -510,7 +527,7 @@
     border-radius: 10px;
     padding: 0.9rem 2rem;
     color: var(--text);
-    font-family: 'Syne', sans-serif;
+    font-family: 'Cormorant', sans-serif;
     font-size: 0.9rem;
     font-weight: 700;
     cursor: pointer;
@@ -547,7 +564,7 @@
 <!-- ══════════════ MENU ══════════════ -->
 <div id="menu" class="screen active">
   <div class="menu-header">
-    <h1>CS Flashcards</h1>
+    <h1>Учись, Вася</h1>
     <p>Подготовка к диктанту по IT-терминологии</p>
   </div>
 
@@ -582,7 +599,7 @@
         <div class="flip-hint">нажмите, чтобы перевернуть</div>
       </div>
       <div class="card-face back">
-        <div class="card-tag" id="cardTagBack">ответ</div>
+        <div class="card-tag-answer" id="cardTagBack">ответ</div>
         <div class="card-back-text" id="cardBack"></div>
         <div class="card-back-sub" id="cardBackSub"></div>
       </div>
@@ -1515,8 +1532,44 @@ function showResults() {
   progress[key] = { correct: correctCount, wrong: wrongCount, total };
   localStorage.setItem('cs_progress', JSON.stringify(progress));
 
-  document.getElementById('resultsTitle').textContent =
-    pct >= 80 ? '🎉 Отличный результат!' : pct >= 50 ? '👍 Неплохо!' : '💪 Нужно повторить';
+  // === ИЗМЕНЕНИЕ: Показываем картинку вместо текста ===
+  const resultsTitleEl = document.getElementById('resultsTitle');
+  
+  // Очищаем элемент от текста
+  resultsTitleEl.textContent = '';
+  
+  // Создаём элемент изображения
+  const resultImage = document.createElement('img');
+  resultImage.alt = 'Результат теста';
+  resultImage.style.maxWidth = '100%';
+  resultImage.style.height = 'auto';
+  resultImage.style.display = 'block';
+  resultImage.style.margin = '0 auto';
+  
+  // Выбираем плейсхолдер в зависимости от результата
+  // 🔧 ЗАМЕНИТЕ пути ниже на свои изображения:
+  if (pct >= 80) {
+    resultImage.src = 'SeasonalRankTop4.webp'; // 🎉 Отличный результат
+    resultImage.className = 'result-img-excellent';    // опционально: класс для стилей
+  } else if (pct >= 50) {
+    resultImage.src = 'SeasonalRank7-1.webp';        // 👍 Неплохо!
+    resultImage.className = 'result-img-good';
+  } else {
+    resultImage.src = 'SeasonalRank1-1.webp';      // 💪 Нужно повторить
+    resultImage.className = 'result-img-repeat';
+  }
+
+  // После вставки изображения можно добавить подпись:
+  const caption = document.createElement('p');
+  caption.textContent = pct >= 80 ? 'хорош' : pct >= 50 ? 'норм' : 'нт';
+  caption.style.textAlign = 'center';
+  caption.style.marginTop = '10px';
+  resultsTitleEl.appendChild(caption);
+
+  // Вставляем изображение в контейнер
+  resultsTitleEl.appendChild(resultImage);
+  // === КОНЕЦ ИЗМЕНЕНИЯ ===
+
   document.getElementById('resultsLevel').textContent = sessionLevelName.toUpperCase();
   document.getElementById('scorePct').textContent = pct + '%';
   document.getElementById('scoreCircle').style.setProperty('--pct', `${pct}%`);
