@@ -831,12 +831,14 @@
   }
 
   @media (max-width: 500px) {
-    .card-area { height: 280px; }
+    .card-back-text {font-size: xx-large;}
+    .card-front-text {font-size: xx-large;}
+    .card-area { height: 60vh; }
     .card-face { padding: 1.5rem; }
     .word-row { grid-template-columns: 1fr auto; }
     .word-row .w-back, .word-row .w-count { display: none; }
     .header-actions { top: -0.5rem; right: 0.5rem; }
-    .icon-btn { width: 36px; height: 36px; font-size: 1rem; }
+    .icon-btn { width: 26px; height: 26px; font-size: 1rem; }
   }
 </style>
 </head>
@@ -1568,7 +1570,6 @@ const TERM_LEVELS = [
     ]
   },
 ];
-
 // ABBREVIATIONS (from Термины_аббревиатуры.pdf)
 const ABBR_CARDS = [
   { front: "2FA", back: "Two-Factor Authentication" },
