@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CS Flashcards</title>
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem('cs_theme') || 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
 <link href="<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,6 +22,7 @@
     --bg:#f9f9fb;
     --surface: #00000000;
     --surface2: #1c1c2800;
+    --surface-solid: #ffffff;
     --border: #2a2a3d;
     --accent: #000000;
     --accent2: #5e4646;
@@ -22,6 +31,33 @@
     --text: #000000;
     --muted: #2f2a2c;
     --card-bg: #f9dede17;
+    --grid: rgba(124,58,237,0.03);
+    --mode-active-bg: #b15b5b;
+    --btn-primary-hover: #6d28d9;
+    --grad-from: #06b6d4;
+    --grad-to: #cd5656;
+    --shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0f0f14;
+    --surface: #1c1c28;
+    --surface2: #242436;
+    --surface-solid: #1c1c28;
+    --border: #3a3a50;
+    --accent: #f0f0f0;
+    --accent2: #c89393;
+    --correct: #34d399;
+    --wrong: #f87171;
+    --text: #f0f0f0;
+    --muted: #a8a8b8;
+    --card-bg: #2a1e1e80;
+    --grid: rgba(200,180,255,0.04);
+    --mode-active-bg: #a04a4a;
+    --btn-primary-hover: #8b5cf6;
+    --grad-from: #22d3ee;
+    --grad-to: #f87171;
+    --shadow: 0 2px 12px rgba(0,0,0,0.35);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,6 +68,7 @@
     font-family: 'Cormorant', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   /* ─── GRID BACKGROUND ─── */
@@ -40,8 +77,8 @@
     position: fixed;
     inset: 0;
     background-image:
-      linear-gradient(rgba(124,58,237,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(124,58,237,0.03) 1px, transparent 1px);
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
     background-size: 40px 40px;
     pointer-events: none;
     z-index: 0;
@@ -62,6 +99,9 @@
   .menu-header {
     text-align: center;
     margin-bottom: 3rem;
+    position: relative;
+    width: 100%;
+    max-width: 900px;
   }
 
   .menu-header h1 {
@@ -69,10 +109,40 @@
     font-weight: 800;
     line-height: 1;
     letter-spacing: -2px;
-    background: linear-gradient(135deg, #06b6d4,  #cd5656);
+    background: linear-gradient(135deg, var(--grad-from), var(--grad-to));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+
+  .header-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 2;
+  }
+
+  .icon-btn {
+    background: var(--surface-solid);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  .icon-btn:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
   }
 
   .menu-header p {
@@ -109,7 +179,7 @@
   }
 
   .mode-tab.active {
-    background: #b15b5b;
+    background: var(--mode-active-bg);
     color: white;
   }
 
@@ -511,7 +581,7 @@
     border: none;
     border-radius: 10px;
     padding: 0.9rem 2rem;
-    color: white;
+    color: var(--bg);
     font-family: 'Cormorant', sans-serif;
     font-size: 0.9rem;
     font-weight: 700;
@@ -519,7 +589,7 @@
     transition: all 0.2s;
   }
 
-  .btn-primary:hover { background: #6d28d9; transform: translateY(-1px); }
+  .btn-primary:hover { background: var(--btn-primary-hover); transform: translateY(-1px); }
 
   .btn-secondary {
     background: var(--surface);
@@ -553,9 +623,220 @@
   .swipe-overlay.show-right { background: rgba(16,185,129,0.15); opacity: 1; }
   .swipe-overlay.show-left { background: rgba(239,68,68,0.15); opacity: 1; }
 
+  /* ─── PROFILE SCREEN ─── */
+  #profile {
+    align-items: center;
+    padding: 2rem 1rem;
+    gap: 1.5rem;
+  }
+
+  .profile-container {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .profile-header h2 {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -1px;
+  }
+
+  .profile-section {
+    background: var(--surface-solid);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+
+  .profile-section h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent2);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    font-family: 'Zen Old Mincho', monospace;
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+
+  .summary-cell {
+    text-align: center;
+    padding: 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+  }
+
+  .summary-cell .val {
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .summary-cell .label {
+    font-family: 'Zen Old Mincho', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-top: 0.4rem;
+    text-transform: uppercase;
+  }
+
+  .threshold-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  .threshold-row label {
+    font-family: 'Zen Old Mincho', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .threshold-slider {
+    flex: 1;
+    min-width: 160px;
+    accent-color: var(--mode-active-bg);
+  }
+
+  .threshold-value {
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: var(--accent2);
+    min-width: 3rem;
+    text-align: right;
+  }
+
+  .weak-hint {
+    font-family: 'Zen Old Mincho', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 0.5rem;
+  }
+
+  .word-list-filters {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  .word-filter {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    font-family: 'Cormorant', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .word-filter.active {
+    background: var(--mode-active-bg);
+    color: white;
+    border-color: var(--mode-active-bg);
+  }
+
+  .word-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 480px;
+    overflow-y: auto;
+  }
+
+  .word-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    font-size: 0.9rem;
+  }
+
+  .word-row .w-front { font-weight: 700; color: var(--text); }
+  .word-row .w-back { color: var(--muted); font-size: 0.85rem; }
+  .word-row .w-count {
+    font-family: 'Zen Old Mincho', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .word-row .w-rate {
+    font-weight: 800;
+    font-size: 1rem;
+    min-width: 3.5rem;
+    text-align: right;
+  }
+  .word-row .w-rate.low { color: var(--wrong); }
+  .word-row .w-rate.mid { color: var(--accent2); }
+  .word-row .w-rate.high { color: var(--correct); }
+
+  .word-empty {
+    text-align: center;
+    color: var(--muted);
+    font-family: 'Zen Old Mincho', monospace;
+    font-size: 0.8rem;
+    padding: 2rem 1rem;
+  }
+
+  .btn-danger {
+    background: transparent;
+    border: 1px solid var(--wrong);
+    color: var(--wrong);
+    border-radius: 10px;
+    padding: 0.7rem 1.5rem;
+    font-family: 'Cormorant', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-danger:hover { background: var(--wrong); color: white; }
+
+  .btn-primary:disabled, .btn-danger:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+
   @media (max-width: 500px) {
     .card-area { height: 280px; }
     .card-face { padding: 1.5rem; }
+    .word-row { grid-template-columns: 1fr auto; }
+    .word-row .w-back, .word-row .w-count { display: none; }
+    .header-actions { top: -0.5rem; right: 0.5rem; }
+    .icon-btn { width: 36px; height: 36px; font-size: 1rem; }
   }
 </style>
 </head>
@@ -564,6 +845,10 @@
 <!-- ══════════════ MENU ══════════════ -->
 <div id="menu" class="screen active">
   <div class="menu-header">
+    <div class="header-actions">
+      <button id="themeBtn" class="icon-btn" onclick="toggleTheme()" title="Тема">🌙</button>
+      <button class="icon-btn" onclick="openProfile()" title="Профиль">👤</button>
+    </div>
     <h1>Учись, Вася</h1>
     <p>Подготовка к диктанту по IT-терминологии</p>
   </div>
@@ -651,6 +936,65 @@
   <div class="results-btns">
     <button class="btn-primary" onclick="retryLevel()">Повторить</button>
     <button class="btn-secondary" onclick="goMenu()">Все темы</button>
+  </div>
+</div>
+
+<!-- ══════════════ PROFILE ══════════════ -->
+<div id="profile" class="screen">
+  <div class="profile-container">
+    <div class="profile-header">
+      <button class="back-btn" onclick="goMenu()">← Назад</button>
+      <h2>Профиль</h2>
+      <div style="width:80px"></div>
+    </div>
+
+    <div class="profile-section">
+      <h3>Сводка</h3>
+      <div class="summary-grid">
+        <div class="summary-cell">
+          <div class="val" id="sumTotalWords">0</div>
+          <div class="label">слов в статистике</div>
+        </div>
+        <div class="summary-cell">
+          <div class="val" id="sumAttempts">0</div>
+          <div class="label">всего ответов</div>
+        </div>
+        <div class="summary-cell">
+          <div class="val" id="sumAvgRate">—</div>
+          <div class="label">средний %</div>
+        </div>
+        <div class="summary-cell">
+          <div class="val" id="sumWeakCount">0</div>
+          <div class="label">слабых сейчас</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-section">
+      <h3>Тренировать слабые</h3>
+      <div class="threshold-row">
+        <label for="thresholdSlider">Порог «знаю»</label>
+        <input type="range" id="thresholdSlider" class="threshold-slider" min="10" max="90" step="5" value="50" oninput="onThresholdChange()">
+        <span class="threshold-value" id="thresholdValue">&lt; 50%</span>
+      </div>
+      <button class="btn-primary" id="weakStartBtn" onclick="startWeakPractice()">Тренировать (0 слов)</button>
+      <div class="weak-hint">Берутся слова, на которые вы отвечали хотя бы раз.</div>
+    </div>
+
+    <div class="profile-section">
+      <h3>Все слова</h3>
+      <div class="word-list-filters" id="wordFilters">
+        <button class="word-filter active" data-filter="all" onclick="setWordFilter('all')">Все</button>
+        <button class="word-filter" data-filter="translation" onclick="setWordFilter('translation')">Переводы</button>
+        <button class="word-filter" data-filter="terms" onclick="setWordFilter('terms')">Термины</button>
+        <button class="word-filter" data-filter="abbr" onclick="setWordFilter('abbr')">Аббревиатуры</button>
+      </div>
+      <div class="word-list" id="wordList"></div>
+    </div>
+
+    <div class="profile-section" style="text-align:center">
+      <button class="btn-danger" onclick="resetStats()">Сбросить статистику слов</button>
+    </div>
   </div>
 </div>
 
@@ -976,19 +1320,19 @@ const TRANSLATION_LEVELS = [
   {
     title: "Текстовый процессор и форматирование",
     cards: [
-      { front: "верхний колонтитул", back: "header" },
-      { front: "нижний колонтитул", back: "footer" },
-      { front: "межстрочный интервал", back: "line spacing" },
-      { front: "нижний регистр", back: "lowercase" },
-      { front: "отступ", back: "indent" },
-      { front: "поля", back: "margins" },
-      { front: "расположение / макет сайта", back: "layout" },
-      { front: "редактировать", back: "to edit" },
-      { front: "стирать данные", back: "to erase / delete / remove" },
-      { front: "форматирование", back: "formatting" },
-      { front: "шрифт", back: "font" },
-      { front: "заливка", back: "shading" },
-      { front: "архивировать", back: "to archive" },
+    { front: "header", back: "верхний колонтитул" },
+    { front: "footer", back: "нижний колонтитул" },
+    { front: "line spacing", back: "межстрочный интервал" },
+    { front: "lowercase", back: "нижний регистр" },
+    { front: "indent", back: "отступ" },
+    { front: "margins", back: "поля" },
+    { front: "layout", back: "расположение / макет сайта" },
+    { front: "to edit", back: "редактировать" },
+    { front: "to erase / delete / remove", back: "стирать данные" },
+    { front: "formatting", back: "форматирование" },
+    { front: "font", back: "шрифт" },
+    { front: "shading", back: "заливка" },
+    { front: "to archive", back: "архивировать" },
     ]
   },
 ];
@@ -1000,227 +1344,227 @@ const TERM_LEVELS = [
   {
     title: "История и архитектура ЭВМ",
     cards: [
-      { front: "An ancient counting tool invented in China around 1300 BC used to perform basic arithmetical operations.", back: "Abacus" },
-      { front: "A mechanical computer designed in the 1830s by Charles Babbage; the first machine resembling modern computers because it contained an ALU, control unit, memory, and I/O system.", back: "Analytical Engine" },
-      { front: "A theory based on Gordon Moore's 1965 prediction stating that computer processing power doubles approximately every two years.", back: "Moore's Law" },
-      { front: "The first mechanical adding machine built by Blaise Pascal between 1642 and 1644, capable of performing addition and subtraction.", back: "Pascaline" },
-      { front: "Electronic digital computers from the 1940s characterized by vacuum tubes, enormous physical size, and the ability to solve only one problem at a time.", back: "First-generation computers" },
-      { front: "Computers from the late 1950s–early 1960s which utilized transistors instead of vacuum tubes; ten times faster and smaller.", back: "Second-generation computers" },
-      { front: "Computers from 1965–1972 built with integrated circuits, enabling speeds of a million calculations per second.", back: "Third-generation computers" },
-      { front: "Computers from mid-1970s to present based on thousands of circuits on a single microprocessor chip, supporting GUI and network connectivity.", back: "Fourth-generation computers" },
-      { front: "Modern computers based on parallel processing and Artificial Intelligence, designed to simulate human reasoning.", back: "Fifth-generation computers" },
-      { front: "A computing method where multiple processors or cores perform several calculations or execute processes simultaneously.", back: "Parallel processing" },
+      { front: "Abacus", back: "An ancient counting tool invented in China around 1300 BC used to perform basic arithmetical operations." },
+      { front: "Analytical Engine", back: "A mechanical computer designed in the 1830s by Charles Babbage; the first machine resembling modern computers because it contained an ALU, control unit, memory, and I/O system." },
+      { front: "Moore's Law", back: "A theory based on Gordon Moore's 1965 prediction stating that computer processing power doubles approximately every two years." },
+      { front: "Pascaline", back: "The first mechanical adding machine built by Blaise Pascal between 1642 and 1644, capable of performing addition and subtraction." },
+      { front: "First-generation computers", back: "Electronic digital computers from the 1940s characterized by vacuum tubes, enormous physical size, and the ability to solve only one problem at a time." },
+      { front: "Second-generation computers", back: "Computers from the late 1950s–early 1960s which utilized transistors instead of vacuum tubes; ten times faster and smaller." },
+      { front: "Third-generation computers", back: "Computers from 1965–1972 built with integrated circuits, enabling speeds of a million calculations per second." },
+      { front: "Fourth-generation computers", back: "Computers from mid-1970s to present based on thousands of circuits on a single microprocessor chip, supporting GUI and network connectivity." },
+      { front: "Fifth-generation computers", back: "Modern computers based on parallel processing and Artificial Intelligence, designed to simulate human reasoning." },
+      { front: "Parallel processing", back: "A computing method where multiple processors or cores perform several calculations or execute processes simultaneously." },
     ]
   },
   {
     title: "Центральный процессор и регистры",
     cards: [
-      { front: "The fundamental component of a computer's processor responsible for performing mathematical calculations and logical operations.", back: "ALU / Arithmetic Logic Unit" },
-      { front: "The 'brain' of the computer, built into a single chip (microprocessor), responsible for executing program instructions and coordinating all other units.", back: "CPU / Central Processing Unit" },
-      { front: "The component of the CPU that interprets instructions from the user's program and directs the rest of the hardware to execute them.", back: "Control Unit" },
-      { front: "A CPU register that keeps track of the next instruction to be performed.", back: "Program Counter (PC)" },
-      { front: "A CPU register that holds the instruction that is being executed now.", back: "Instruction Register (IR)" },
-      { front: "High-speed memory units within the CPU used to store and control data immediately needed for instruction execution.", back: "Registers" },
-      { front: "The measurement of how many cycles a CPU executes per second, typically measured in gigahertz (GHz).", back: "Clock speed" },
-      { front: "A technology that allows two threads to run on a single core, enabling more effective use of CPU resources.", back: "SMT / Simultaneous Multi-threading" },
+      { front: "ALU / Arithmetic Logic Unit", back: "The fundamental component of a computer's processor responsible for performing mathematical calculations and logical operations." },
+      { front: "CPU / Central Processing Unit", back: "The 'brain' of the computer, built into a single chip (microprocessor), responsible for executing program instructions and coordinating all other units." },
+      { front: "Control Unit", back: "The component of the CPU that interprets instructions from the user's program and directs the rest of the hardware to execute them." },
+      { front: "Program Counter (PC)", back: "A CPU register that keeps track of the next instruction to be performed." },
+      { front: "Instruction Register (IR)", back: "A CPU register that holds the instruction that is being executed now." },
+      { front: "Registers", back: "High-speed memory units within the CPU used to store and control data immediately needed for instruction execution." },
+      { front: "Clock speed", back: "The measurement of how many cycles a CPU executes per second, typically measured in gigahertz (GHz)." },
+      { front: "SMT / Simultaneous Multi-threading", back: "A technology that allows two threads to run on a single core, enabling more effective use of CPU resources." },
     ]
   },
   {
     title: "Аппаратное обеспечение и периферия",
     cards: [
-      { front: "Any physical, electronic, or mechanical part of a computer system that can be seen or touched.", back: "Hardware" },
-      { front: "The main circuit board of a computer that holds the CPU, memory chips, expansion slots, and controllers for peripherals.", back: "Motherboard" },
-      { front: "An electrical channel that carries signals and allows devices inside the computer to communicate with each other.", back: "Bus" },
-      { front: "A socket on the motherboard that allows users to install expansion cards to add features like sound or network capabilities.", back: "Expansion slot" },
-      { front: "A hardware unit that enables the user to enter data into the computer's memory, such as a keyboard, mouse, or scanner.", back: "Input device" },
-      { front: "Any peripheral that allows the user to extract or view the finished results from the system, such as a monitor or printer.", back: "Output device" },
-      { front: "Physical units attached to the computer, including input, output, and storage devices.", back: "Peripherals" },
-      { front: "A sensitive pad built into a laptop keyboard that allows the user to move the pointer on the screen by touch.", back: "Touchpad" },
-      { front: "An input device that converts images, printed text or handwriting into a digital image.", back: "Scanner" },
-      { front: "A ROM chip on the motherboard containing firmware used to perform hardware initialization during the booting process.", back: "BIOS" },
-      { front: "A miniature electronic circuit consisting of various interconnected components fabricated onto a single semiconductor substance.", back: "Integrated Circuit (IC)" },
-      { front: "A material, such as silicon, whose ability to conduct electricity increases as its temperature rises.", back: "Semiconductor" },
-      { front: "A semiconductor that controls voltage or current flow in electronic signals acting as a switch; replaced vacuum tubes in second-generation computers.", back: "Transistor" },
-      { front: "An electronic device that regulates electron movement in a vacuum; used in first-generation computers to control the flow of electricity.", back: "Vacuum tube" },
+      { front: "Hardware", back: "Any physical, electronic, or mechanical part of a computer system that can be seen or touched." },
+      { front: "Motherboard", back: "The main circuit board of a computer that holds the CPU, memory chips, expansion slots, and controllers for peripherals." },
+      { front: "Bus", back: "An electrical channel that carries signals and allows devices inside the computer to communicate with each other." },
+      { front: "Expansion slot", back: "A socket on the motherboard that allows users to install expansion cards to add features like sound or network capabilities." },
+      { front: "Input device", back: "A hardware unit that enables the user to enter data into the computer's memory, such as a keyboard, mouse, or scanner." },
+      { front: "Output device", back: "Any peripheral that allows the user to extract or view the finished results from the system, such as a monitor or printer." },
+      { front: "Peripherals", back: "Physical units attached to the computer, including input, output, and storage devices." },
+      { front: "Touchpad", back: "A sensitive pad built into a laptop keyboard that allows the user to move the pointer on the screen by touch." },
+      { front: "Scanner", back: "An input device that converts images, printed text or handwriting into a digital image." },
+      { front: "BIOS", back: "A ROM chip on the motherboard containing firmware used to perform hardware initialization during the booting process." },
+      { front: "Integrated Circuit (IC)", back: "A miniature electronic circuit consisting of various interconnected components fabricated onto a single semiconductor substance." },
+      { front: "Semiconductor", back: "A material, such as silicon, whose ability to conduct electricity increases as its temperature rises." },
+      { front: "Transistor", back: "A semiconductor that controls voltage or current flow in electronic signals acting as a switch; replaced vacuum tubes in second-generation computers." },
+      { front: "Vacuum tube", back: "An electronic device that regulates electron movement in a vacuum; used in first-generation computers to control the flow of electricity." },
     ]
   },
   {
     title: "Типы компьютеров",
     cards: [
-      { front: "A personal computer designed for use in a single, stationary location, typically consisting of a system unit, monitor, keyboard, and mouse.", back: "Desktop PC" },
-      { front: "A portable, lightweight computer with a hinged design, featuring a flat LCD screen, a built-in keyboard with a touchpad, and a battery for mobile use.", back: "Laptop" },
-      { front: "A large, powerful computer capable of supporting multiple users and thousands of simultaneous queries; often used for large-scale data processing.", back: "Mainframe" },
-      { front: "The fastest type of computer, containing tens of thousands of processors for simultaneous execution of data-intensive tasks.", back: "Supercomputer" },
-      { front: "A highly portable mobile device with a touch screen interface, typically lacking a physical keyboard and using a mobile operating system.", back: "Tablet PC" },
-      { front: "A central computer connected to a network of client workstations, designed to store data and provide services.", back: "Server" },
+      { front: "Desktop PC", back: "A personal computer designed for use in a single, stationary location, typically consisting of a system unit, monitor, keyboard, and mouse." },
+      { front: "Laptop", back: "A portable, lightweight computer with a hinged design, featuring a flat LCD screen, a built-in keyboard with a touchpad, and a battery for mobile use." },
+      { front: "Mainframe", back: "A large, powerful computer capable of supporting multiple users and thousands of simultaneous queries; often used for large-scale data processing." },
+      { front: "Supercomputer", back: "The fastest type of computer, containing tens of thousands of processors for simultaneous execution of data-intensive tasks." },
+      { front: "Tablet PC", back: "A highly portable mobile device with a touch screen interface, typically lacking a physical keyboard and using a mobile operating system." },
+      { front: "Server", back: "A central computer connected to a network of client workstations, designed to store data and provide services." },
     ]
   },
   {
     title: "Память и хранение данных",
     cards: [
-      { front: "Volatile main memory used to temporarily store data and instructions while they are being processed by the CPU; its contents are lost when power is turned off.", back: "RAM / Random Access Memory" },
-      { front: "Non-volatile memory containing permanent instructions and routines for basic CPU operations, such as the BIOS.", back: "ROM / Read Only Memory" },
-      { front: "A type of very fast volatile memory that holds a small amount of recently accessed data and acts as a buffer between main memory and the processor.", back: "Cache memory" },
-      { front: "An internal storage device, such as cache or RAM, which can be directly accessed by the CPU with minimum or no delay.", back: "Primary memory" },
-      { front: "A situation when the processor finds data in the cache area.", back: "Cache hit" },
-      { front: "A situation when the processor does not find data in the cache area and reads it in the slower RAM.", back: "Cache miss" },
-      { front: "A method changing data in the cache area first, while RAM is updated later.", back: "Write-back cache" },
-      { front: "A method of refreshing data in the cache and main memory simultaneously.", back: "Write-through cache" },
-      { front: "The amount of time it takes for a storage device to search and locate the data you plan to open.", back: "Access time" },
-      { front: "A type of non-volatile memory which works by using electronic circuits to store and retrieve data.", back: "Flash memory" },
-      { front: "An outdated storage device of low capacity made of flexible plastic upon which data is stored on magnetic tracks.", back: "Floppy disk" },
-      { front: "A type of storage in which data is written by magnetizing particles on a disk or tape.", back: "Magnetic storage" },
-      { front: "A type of storage in which data is written as a series of reflective marks and read with a laser.", back: "Optical storage" },
-      { front: "A part of an HDD which reads and writes data by magnetizing and demagnetizing fields on spinning platters.", back: "Read/write head" },
-      { front: "The average speed at which data can be transmitted from one device to another, often measured in megabytes per second.", back: "Transfer rate" },
-      { front: "A type of CD which is released blank and can be recorded on once only.", back: "CD-R" },
-      { front: "A type of CD which comes pre-recorded and doesn't allow changing data stored on it.", back: "CD-ROM" },
-      { front: "A type of CD whose data can be written, read, erased, and rewritten.", back: "CD-RW" },
-      { front: "A type of flash memory that provides fast access to small amounts of data; used in bootloaders and firmware.", back: "NOR flash" },
-      { front: "A type of flash memory that provides slow access to large amounts of data; used in SSDs and USB flash drives.", back: "NAND flash" },
+      { front: "RAM / Random Access Memory", back: "Volatile main memory used to temporarily store data and instructions while they are being processed by the CPU; its contents are lost when power is turned off." },
+      { front: "ROM / Read Only Memory", back: "Non-volatile memory containing permanent instructions and routines for basic CPU operations, such as the BIOS." },
+      { front: "Cache memory", back: "A type of very fast volatile memory that holds a small amount of recently accessed data and acts as a buffer between main memory and the processor." },
+      { front: "Primary memory", back: "An internal storage device, such as cache or RAM, which can be directly accessed by the CPU with minimum or no delay." },
+      { front: "Cache hit", back: "A situation when the processor finds data in the cache area." },
+      { front: "Cache miss", back: "A situation when the processor does not find data in the cache area and reads it in the slower RAM." },
+      { front: "Write-back cache", back: "A method changing data in the cache area first, while RAM is updated later." },
+      { front: "Write-through cache", back: "A method of refreshing data in the cache and main memory simultaneously." },
+      { front: "Access time", back: "The amount of time it takes for a storage device to search and locate the data you plan to open." },
+      { front: "Flash memory", back: "A type of non-volatile memory which works by using electronic circuits to store and retrieve data." },
+      { front: "Floppy disk", back: "An outdated storage device of low capacity made of flexible plastic upon which data is stored on magnetic tracks." },
+      { front: "Magnetic storage", back: "A type of storage in which data is written by magnetizing particles on a disk or tape." },
+      { front: "Optical storage", back: "A type of storage in which data is written as a series of reflective marks and read with a laser." },
+      { front: "Read/write head", back: "A part of an HDD which reads and writes data by magnetizing and demagnetizing fields on spinning platters." },
+      { front: "Transfer rate", back: "The average speed at which data can be transmitted from one device to another, often measured in megabytes per second." },
+      { front: "CD-R", back: "A type of CD which is released blank and can be recorded on once only." },
+      { front: "CD-ROM", back: "A type of CD which comes pre-recorded and doesn't allow changing data stored on it." },
+      { front: "CD-RW", back: "A type of CD whose data can be written, read, erased, and rewritten." },
+      { front: "NOR flash", back: "A type of flash memory that provides fast access to small amounts of data; used in bootloaders and firmware." },
+      { front: "NAND flash", back: "A type of flash memory that provides slow access to large amounts of data; used in SSDs and USB flash drives." },
     ]
   },
   {
     title: "Программное обеспечение и ОС",
     cards: [
-      { front: "A set of programs that manage the computer's hardware resources, establish a user interface, and provide the environment for application programs to run.", back: "Operating system" },
-      { front: "A type of computer software whose copyright holder grants users the rights to use, study, change, and distribute the software.", back: "Open-source software" },
-      { front: "Non-free software whose users are not allowed to share, modify, or distribute modifications.", back: "Proprietary software" },
-      { front: "The way to interact with a computer system through typing various commands in the form of lines of text.", back: "CLI / Command Line Interface" },
-      { front: "A user-friendly interface based on graphics; it uses a WIMP environment.", back: "GUI / Graphical User Interface" },
-      { front: "Permanent software or set of instructions stored in ROM of the computer system.", back: "Firmware" },
-      { front: "Being able to work with another device or program.", back: "Compatible" },
-      { front: "A type of software that controls specific hardware of the computer system.", back: "Device driver" },
-      { front: "A computer application for organization, analysis and storage of data in a tabular form.", back: "Spreadsheet" },
-      { front: "A computer application used to compose and edit texts.", back: "Word processor" },
-      { front: "A type of multitasking where the operating system can initiate a context switch to satisfy the scheduling policy's priority.", back: "Preemptive multitasking" },
-      { front: "A computer multitasking technique in which the operating system never initiates a context switch from a running process to another process.", back: "Cooperative multitasking" },
+      { front: "Operating system", back: "A set of programs that manage the computer's hardware resources, establish a user interface, and provide the environment for application programs to run." },
+      { front: "Open-source software", back: "A type of computer software whose copyright holder grants users the rights to use, study, change, and distribute the software." },
+      { front: "Proprietary software", back: "Non-free software whose users are not allowed to share, modify, or distribute modifications." },
+      { front: "CLI / Command Line Interface", back: "The way to interact with a computer system through typing various commands in the form of lines of text." },
+      { front: "GUI / Graphical User Interface", back: "A user-friendly interface based on graphics; it uses a WIMP environment." },
+      { front: "Firmware", back: "Permanent software or set of instructions stored in ROM of the computer system." },
+      { front: "Compatible", back: "Being able to work with another device or program." },
+      { front: "Device driver", back: "A type of software that controls specific hardware of the computer system." },
+      { front: "Spreadsheet", back: "A computer application for organization, analysis and storage of data in a tabular form." },
+      { front: "Word processor", back: "A computer application used to compose and edit texts." },
+      { front: "Preemptive multitasking", back: "A type of multitasking where the operating system can initiate a context switch to satisfy the scheduling policy's priority." },
+      { front: "Cooperative multitasking", back: "A computer multitasking technique in which the operating system never initiates a context switch from a running process to another process." },
     ]
   },
   {
     title: "Языки программирования и ООП",
     cards: [
-      { front: "A low-level programming language that uses symbolic instructions rather than raw binary coding to communicate directly with computer hardware.", back: "Assembly language" },
-      { front: "A special program that converts a source program (written in a high-level language) into object code in one go.", back: "Compiler" },
-      { front: "A special program that translates the source code line by line, as the program is running.", back: "Interpreter" },
-      { front: "A programming paradigm that relies on the concept of classes and objects; objects encapsulate data and functions.", back: "OOP / Object-Oriented Programming" },
-      { front: "The ability of one class to use properties and behavior of another class.", back: "Inheritance" },
-      { front: "A programming language's ability to process objects differently depending on their data type or class.", back: "Polymorphism" },
-      { front: "A fundamental concept that combines data (attributes) and methods (functions) into a single unit.", back: "Encapsulation" },
-      { front: "A set of instructions typically written in a high-level language that defines how a program or application should function.", back: "Source code" },
-      { front: "The technique of detecting and correcting errors which may occur in programs.", back: "Debugging" },
-      { front: "A code made of just two numbers (0 and 1).", back: "Machine code" },
+      { front: "Assembly language", back: "A low-level programming language that uses symbolic instructions rather than raw binary coding to communicate directly with computer hardware." },
+      { front: "Compiler", back: "A special program that converts a source program (written in a high-level language) into object code in one go." },
+      { front: "Interpreter", back: "A special program that translates the source code line by line, as the program is running." },
+      { front: "OOP / Object-Oriented Programming", back: "A programming paradigm that relies on the concept of classes and objects; objects encapsulate data and functions." },
+      { front: "Inheritance", back: "The ability of one class to use properties and behavior of another class." },
+      { front: "Polymorphism", back: "A programming language's ability to process objects differently depending on their data type or class." },
+      { front: "Encapsulation", back: "A fundamental concept that combines data (attributes) and methods (functions) into a single unit." },
+      { front: "Source code", back: "A set of instructions typically written in a high-level language that defines how a program or application should function." },
+      { front: "Debugging", back: "The technique of detecting and correcting errors which may occur in programs." },
+      { front: "Machine code", back: "A code made of just two numbers (0 and 1)." },
     ]
   },
   {
     title: "Сети",
     cards: [
-      { front: "The configuration of the elements (nodes) of a network.", back: "Topology" },
-      { front: "A collection of devices connected together in one physical location, such as a building, office, or home.", back: "LAN / Local Area Network" },
-      { front: "A high-speed network that interconnects multiple LANs within a specific geographic area, such as a city.", back: "MAN / Metropolitan Area Network" },
-      { front: "A type of computer network that connects computers and other devices over a large geographical area (a country or a continent).", back: "WAN / Wide Area Network" },
-      { front: "A node that broadcasts data to every computer or Ethernet-based device connected to it without restriction.", back: "Network hub" },
-      { front: "A device identical to a network hub but forwards data to the specific device only based on its MAC address.", back: "Network switch" },
-      { front: "A network setup where all nodes connect directly to a single, central cable known as the backbone or bus.", back: "Bus topology" },
-      { front: "A network architecture in which all computers have the same capabilities and share files without requiring a separate server.", back: "Peer-to-peer network" },
-      { front: "A computing model in which multiple clients connect to a central server to access resources.", back: "Client-server network" },
-      { front: "A LAN topology in which all devices are interconnected in a continuous loop.", back: "Ring topology" },
-      { front: "A network configuration where every device is interconnected with every other device, providing multiple routes for data.", back: "Mesh topology" },
-      { front: "A LAN topology in which all data flows through a central hub, a common connection point for all devices.", back: "Star topology" },
-      { front: "A hardware component connecting networks that use the same protocol.", back: "Bridge" },
-      { front: "A networking device that can send data packets from one network to another.", back: "Router" },
-      { front: "A device or software used to enable communication between two networks that may be using different protocols.", back: "Gateway" },
-      { front: "The time delay between a user's action (request) and the system's response, typically measured in milliseconds.", back: "Latency" },
-      { front: "A computer hardware device that converts data from a digital format into a format suitable for an analog transmission medium.", back: "Modem" },
-      { front: "A wireless computer network that forms a local area network by linking devices over Wi-Fi radio signals.", back: "WLAN / Wireless LAN" },
-      { front: "A high-capacity communications network that serves as the principal data path interconnecting multiple subnetworks.", back: "Backbone network" },
-      { front: "A set of rules that explains how different computer systems communicate over a network (7 layers).", back: "OSI model" },
-      { front: "A 12-digit hexadecimal number that uniquely identifies every device connected to a network.", back: "MAC address" },
-      { front: "The unique identifying number assigned to every device connected to the internet.", back: "IP address" },
-      { front: "A wireless technology that allows mobile devices and peripheral devices to communicate over short distances.", back: "Bluetooth" },
+      { front: "Topology", back: "The configuration of the elements (nodes) of a network." },
+      { front: "LAN / Local Area Network", back: "A collection of devices connected together in one physical location, such as a building, office, or home." },
+      { front: "MAN / Metropolitan Area Network", back: "A high-speed network that interconnects multiple LANs within a specific geographic area, such as a city." },
+      { front: "WAN / Wide Area Network", back: "A type of computer network that connects computers and other devices over a large geographical area (a country or a continent)." },
+      { front: "Network hub", back: "A node that broadcasts data to every computer or Ethernet-based device connected to it without restriction." },
+      { front: "Network switch", back: "A device identical to a network hub but forwards data to the specific device only based on its MAC address." },
+      { front: "Bus topology", back: "A network setup where all nodes connect directly to a single, central cable known as the backbone or bus." },
+      { front: "Peer-to-peer network", back: "A network architecture in which all computers have the same capabilities and share files without requiring a separate server." },
+      { front: "Client-server network", back: "A computing model in which multiple clients connect to a central server to access resources." },
+      { front: "Ring topology", back: "A LAN topology in which all devices are interconnected in a continuous loop." },
+      { front: "Mesh topology", back: "A network configuration where every device is interconnected with every other device, providing multiple routes for data." },
+      { front: "Star topology", back: "A LAN topology in which all data flows through a central hub, a common connection point for all devices." },
+      { front: "Bridge", back: "A hardware component connecting networks that use the same protocol." },
+      { front: "Router", back: "A networking device that can send data packets from one network to another." },
+      { front: "Gateway", back: "A device or software used to enable communication between two networks that may be using different protocols." },
+      { front: "Latency", back: "The time delay between a user's action (request) and the system's response, typically measured in milliseconds." },
+      { front: "Modem", back: "A computer hardware device that converts data from a digital format into a format suitable for an analog transmission medium." },
+      { front: "WLAN / Wireless LAN", back: "A wireless computer network that forms a local area network by linking devices over Wi-Fi radio signals." },
+      { front: "Backbone network", back: "A high-capacity communications network that serves as the principal data path interconnecting multiple subnetworks." },
+      { front: "OSI model", back: "A set of rules that explains how different computer systems communicate over a network (7 layers)." },
+      { front: "MAC address", back: "A 12-digit hexadecimal number that uniquely identifies every device connected to a network." },
+      { front: "IP address", back: "The unique identifying number assigned to every device connected to the internet." },
+      { front: "Bluetooth", back: "A wireless technology that allows mobile devices and peripheral devices to communicate over short distances." },
     ]
   },
   {
     title: "Интернет и протоколы",
     cards: [
-      { front: "A type of cable that consists of four main components: inner conductor, insulation, metal shield, and jacket.", back: "Coaxial cable" },
-      { front: "An approach in which a path is built between source and destination through which all packets are routed.", back: "Virtual circuit switching" },
-      { front: "A packet switching method that treats each packet as a separate entity routed via the network on its own through different paths.", back: "Datagram switching" },
-      { front: "A broadband communication technology designed for telephone lines; allows a single phone connection for both Internet and voice calls.", back: "DSL / Digital Subscriber Line" },
-      { front: "The fastest wired way to access the Internet transmitting information as pulses of light through strands of glass or plastic.", back: "Fiber-optic technology" },
-      { front: "The measure of how much information can pass through a data connection in a given amount of time, measured in bits per second.", back: "Bandwidth" },
-      { front: "A radio-based communication network distributed over land areas called cells, each served by a fixed-location transceiver.", back: "Cellular network" },
-      { front: "The least expensive but also slowest way to access the Internet which uses a standard phone line and analog modem.", back: "Dial-up connection" },
-      { front: "A four-layer protocol model used on the Internet to govern how data is transmitted between computers.", back: "TCP/IP stack" },
-      { front: "An information system accessible through the Internet where documents are identified by a URL.", back: "WWW / World Wide Web" },
+      { front: "Coaxial cable", back: "A type of cable that consists of four main components: inner conductor, insulation, metal shield, and jacket." },
+      { front: "Virtual circuit switching", back: "An approach in which a path is built between source and destination through which all packets are routed." },
+      { front: "Datagram switching", back: "A packet switching method that treats each packet as a separate entity routed via the network on its own through different paths." },
+      { front: "DSL / Digital Subscriber Line", back: "A broadband communication technology designed for telephone lines; allows a single phone connection for both Internet and voice calls." },
+      { front: "Fiber-optic technology", back: "The fastest wired way to access the Internet transmitting information as pulses of light through strands of glass or plastic." },
+      { front: "Bandwidth", back: "The measure of how much information can pass through a data connection in a given amount of time, measured in bits per second." },
+      { front: "Cellular network", back: "A radio-based communication network distributed over land areas called cells, each served by a fixed-location transceiver." },
+      { front: "Dial-up connection", back: "The least expensive but also slowest way to access the Internet which uses a standard phone line and analog modem." },
+      { front: "TCP/IP stack", back: "A four-layer protocol model used on the Internet to govern how data is transmitted between computers." },
+      { front: "WWW / World Wide Web", back: "An information system accessible through the Internet where documents are identified by a URL." },
     ]
   },
   {
     title: "Поисковые системы и веб-дизайн",
     cards: [
-      { front: "The process of ordering the search results from most relevant to least relevant.", back: "Ranking" },
-      { front: "A special program (spider) that regularly browses the web to discover new content by following hyperlinks.", back: "Web crawler" },
-      { front: "A system that depends on human editors for listings; a directory gets info from submissions.", back: "Human-powered directory" },
-      { front: "A type of search engine which sends users' queries to several other search engines and compiles top results from each.", back: "Meta-search engine" },
-      { front: "A field on the screen that allows users to enter keywords or phrases to find specific content.", back: "Search bar" },
-      { front: "Software that serves as a gateway to the World Wide Web; identifies URLs and displays the corresponding page.", back: "Web browser" },
-      { front: "A software system that scans, indexes, and retrieves web content to help users find information online.", back: "Search engine" },
-      { front: "A highlighted word or image in a hypertext document that takes a user to another location when clicked.", back: "Hyperlink" },
-      { front: "A field of web development associated with the part of the site connected to the server.", back: "Backend development" },
-      { front: "A field of web development that focuses on the visible part of the site.", back: "Frontend development" },
-      { front: "A code used to describe the structure of information on a webpage telling the web browser how to display its content.", back: "HTML" },
-      { front: "A mechanism for adding style (e.g. fonts, colors, spacing) to web documents.", back: "CSS" },
-      { front: "A set of improvements that increases visibility of a site and helps it rank higher on the results page.", back: "SEO" },
-      { front: "A platform that can be used to create a website without having to code.", back: "Website builder" },
+      { front: "Ranking", back: "The process of ordering the search results from most relevant to least relevant." },
+      { front: "Web crawler", back: "A special program (spider) that regularly browses the web to discover new content by following hyperlinks." },
+      { front: "Human-powered directory", back: "A system that depends on human editors for listings; a directory gets info from submissions." },
+      { front: "Meta-search engine", back: "A type of search engine which sends users' queries to several other search engines and compiles top results from each." },
+      { front: "Search bar", back: "A field on the screen that allows users to enter keywords or phrases to find specific content." },
+      { front: "Web browser", back: "Software that serves as a gateway to the World Wide Web; identifies URLs and displays the corresponding page." },
+      { front: "Search engine", back: "A software system that scans, indexes, and retrieves web content to help users find information online." },
+      { front: "Hyperlink", back: "A highlighted word or image in a hypertext document that takes a user to another location when clicked." },
+      { front: "Backend development", back: "A field of web development associated with the part of the site connected to the server." },
+      { front: "Frontend development", back: "A field of web development that focuses on the visible part of the site." },
+      { front: "HTML", back: "A code used to describe the structure of information on a webpage telling the web browser how to display its content." },
+      { front: "CSS", back: "A mechanism for adding style (e.g. fonts, colors, spacing) to web documents." },
+      { front: "SEO", back: "A set of improvements that increases visibility of a site and helps it rank higher on the results page." },
+      { front: "Website builder", back: "A platform that can be used to create a website without having to code." },
     ]
   },
   {
     title: "Вредоносное ПО и кибербезопасность",
     cards: [
-      { front: "Malicious software designed to enter a computer device, gather data about a person and forward it to a third party without consent.", back: "Spyware" },
-      { front: "A form of financially supported malware that usually presents itself as unwanted commercials.", back: "Adware" },
-      { front: "A type of spyware used to monitor and record each keystroke on a specific keyboard.", back: "Keylogger" },
-      { front: "A standalone malicious computer program that replicates itself to infect other computers; spreads across the network without attaching to a host file.", back: "Worm" },
-      { front: "A type of cybercrime which involves redirecting anyone trying to visit a certain site elsewhere.", back: "Hijacking" },
-      { front: "An attack where hackers overload networks and servers with traffic so that computer systems are unable to keep up with legitimate needs.", back: "DDoS attack" },
-      { front: "A type of malware that misleads users of its true intent by pretending to be a useful program.", back: "Trojan" },
-      { front: "A type of cybercrime where the attacker sends a fake message designed to trick a person into revealing sensitive information.", back: "Phishing" },
-      { front: "A type of malware that threatens to publish or encrypts the victim's data unless a payment is made.", back: "Ransomware" },
-      { front: "A technique that involves leaving, within a completed program, an illicit program that allows unauthorized and unknown entry.", back: "Backdoor" },
-      { front: "A cybercrime which involves changing the information shown on another person's website.", back: "Defacement" },
-      { front: "The component that allows a virus to hide itself.", back: "Misdirection routine" },
-      { front: "The component of a virus that activates payload.", back: "Trigger" },
-      { front: "The component of a virus that does the damage to the computer system.", back: "Payload" },
-      { front: "The component that allows the virus to self-replicate and infect other programs.", back: "Reproduction routine" },
-      { front: "A combination of software and hardware used to protect private networks by filtering incoming data traffic.", back: "Firewall" },
-      { front: "A type of malware detection technique which identifies potentially malicious software without an exact match in signature database.", back: "Heuristic scanning" },
-      { front: "The practice employed to protect computers, servers, networks, mobile devices, and data from being attacked.", back: "Cybersecurity" },
-      { front: "A user verification technology that requires more than one type of user validation.", back: "MFA / Multi-factor authentication" },
-      { front: "A way of encoding data so that only authorized parties can understand the information.", back: "Encryption" },
-      { front: "An Internet security protocol that encrypts data to ensure secure communication between devices over a network.", back: "SSL / Secure Sockets Layer" },
-      { front: "Encrypted text transformed from plaintext using an encryption algorithm.", back: "Ciphertext" },
-      { front: "The process of hiding or coding information so that only the intended person can read it.", back: "Cryptography" },
-      { front: "The process of using a single key to both encrypt and decrypt data.", back: "Symmetric encryption" },
-      { front: "A security method that uses a mathematically linked pair of keys—a public key for encryption and a private key for decryption.", back: "Asymmetric encryption" },
-      { front: "Software designed to detect and take action to disarm or remove malicious software such as viruses, worms and Trojans.", back: "Antivirus software" },
-      { front: "A backup type that only copies data that has been changed or created since the previous full, differential or incremental backup.", back: "Incremental backup" },
-      { front: "A data protection method that copies all files changed since the last full backup.", back: "Differential backup" },
+      { front: "Spyware", back: "Malicious software designed to enter a computer device, gather data about a person and forward it to a third party without consent." },
+      { front: "Adware", back: "A form of financially supported malware that usually presents itself as unwanted commercials." },
+      { front: "Keylogger", back: "A type of spyware used to monitor and record each keystroke on a specific keyboard." },
+      { front: "Worm", back: "A standalone malicious computer program that replicates itself to infect other computers; spreads across the network without attaching to a host file." },
+      { front: "Hijacking", back: "A type of cybercrime which involves redirecting anyone trying to visit a certain site elsewhere." },
+      { front: "DDoS attack", back: "An attack where hackers overload networks and servers with traffic so that computer systems are unable to keep up with legitimate needs." },
+      { front: "Trojan", back: "A type of malware that misleads users of its true intent by pretending to be a useful program." },
+      { front: "Phishing", back: "A type of cybercrime where the attacker sends a fake message designed to trick a person into revealing sensitive information." },
+      { front: "Ransomware", back: "A type of malware that threatens to publish or encrypts the victim's data unless a payment is made." },
+      { front: "Backdoor", back: "A technique that involves leaving, within a completed program, an illicit program that allows unauthorized and unknown entry." },
+      { front: "Defacement", back: "A cybercrime which involves changing the information shown on another person's website." },
+      { front: "Misdirection routine", back: "The component that allows a virus to hide itself." },
+      { front: "Trigger", back: "The component of a virus that activates payload." },
+      { front: "Payload", back: "The component of a virus that does the damage to the computer system." },
+      { front: "Reproduction routine", back: "The component that allows the virus to self-replicate and infect other programs." },
+      { front: "Firewall", back: "A combination of software and hardware used to protect private networks by filtering incoming data traffic." },
+      { front: "Heuristic scanning", back: "A type of malware detection technique which identifies potentially malicious software without an exact match in signature database." },
+      { front: "Cybersecurity", back: "The practice employed to protect computers, servers, networks, mobile devices, and data from being attacked." },
+      { front: "MFA / Multi-factor authentication", back: "A user verification technology that requires more than one type of user validation." },
+      { front: "Encryption", back: "A way of encoding data so that only authorized parties can understand the information." },
+      { front: "SSL / Secure Sockets Layer", back: "An Internet security protocol that encrypts data to ensure secure communication between devices over a network." },
+      { front: "Ciphertext", back: "Encrypted text transformed from plaintext using an encryption algorithm." },
+      { front: "Cryptography", back: "The process of hiding or coding information so that only the intended person can read it." },
+      { front: "Symmetric encryption", back: "The process of using a single key to both encrypt and decrypt data." },
+      { front: "Asymmetric encryption", back: "A security method that uses a mathematically linked pair of keys—a public key for encryption and a private key for decryption." },
+      { front: "Antivirus software", back: "Software designed to detect and take action to disarm or remove malicious software such as viruses, worms and Trojans." },
+      { front: "Incremental backup", back: "A backup type that only copies data that has been changed or created since the previous full, differential or incremental backup." },
+      { front: "Differential backup", back: "A data protection method that copies all files changed since the last full backup." },
     ]
   },
   {
     title: "AI, нейросети и будущее IT",
     cards: [
-      { front: "A technology that simulates human intelligence in computer systems, enabling robots or computers to do tasks usually done by humans.", back: "AI / Artificial Intelligence" },
-      { front: "A system of interrelated computing devices provided with the ability to share data in order to automate processes.", back: "IoT / Internet of Things" },
-      { front: "A computer-generated space in which the user interacts with artificial objects through 3-D computer simulation.", back: "VR / Virtual Reality" },
-      { front: "Computing systems with interconnected nodes that resemble neurons in the human brain; using algorithms, they recognize hidden patterns in raw data.", back: "Neural Networks" },
-      { front: "An enhanced version of the real physical world which integrates digital information with the existing environment in real time.", back: "AR / Augmented Reality" },
-      { front: "An algorithm designed to test for errors working back from output nodes to input nodes.", back: "Backpropagation" },
-      { front: "A subset of AI that enables software to learn from data, identifying patterns to make predictions or decisions without being explicitly programmed.", back: "Machine Learning (ML)" },
-      { front: "Layers of artificial neurons between the input and output layers that process information, forming the core computational engine of a neural network.", back: "Hidden units" },
-      { front: "A numerical value representing the strength of the connection between two neurons in a neural network.", back: "Weight" },
-      { front: "A test of whether a computer can show intelligent behavior like that of a human, done by seeing if a tester can tell whether answers come from a computer or person.", back: "Turing Test" },
-      { front: "A term used to describe artificial intelligence systems that have human-like abilities in reasoning, learning, perception, and problem solving.", back: "HLAI / Human-level AI" },
+      { front: "AI / Artificial Intelligence", back: "A technology that simulates human intelligence in computer systems, enabling robots or computers to do tasks usually done by humans." },
+      { front: "IoT / Internet of Things", back: "A system of interrelated computing devices provided with the ability to share data in order to automate processes." },
+      { front: "VR / Virtual Reality", back: "A computer-generated space in which the user interacts with artificial objects through 3-D computer simulation." },
+      { front: "Neural Networks", back: "Computing systems with interconnected nodes that resemble neurons in the human brain; using algorithms, they recognize hidden patterns in raw data." },
+      { front: "AR / Augmented Reality", back: "An enhanced version of the real physical world which integrates digital information with the existing environment in real time." },
+      { front: "Backpropagation", back: "An algorithm designed to test for errors working back from output nodes to input nodes." },
+      { front: "Machine Learning (ML)", back: "A subset of AI that enables software to learn from data, identifying patterns to make predictions or decisions without being explicitly programmed." },
+      { front: "Hidden units", back: "Layers of artificial neurons between the input and output layers that process information, forming the core computational engine of a neural network." },
+      { front: "Weight", back: "A numerical value representing the strength of the connection between two neurons in a neural network." },
+      { front: "Turing Test", back: "A test of whether a computer can show intelligent behavior like that of a human, done by seeing if a tester can tell whether answers come from a computer or person." },
+      { front: "HLAI / Human-level AI", back: "A term used to describe artificial intelligence systems that have human-like abilities in reasoning, learning, perception, and problem solving." },
     ]
   },
 ];
@@ -1331,7 +1675,8 @@ const ABBR_CARDS = [
 //  STATE
 // ══════════════════════════════════════════════
 
-let currentMode = 'translation'; // 'translation' | 'terms' | 'abbr'
+let currentMode = 'translation'; // 'translation' | 'terms' | 'abbr' | 'weak'
+let lastRegularMode = 'translation';
 let currentLevel = null;
 let currentCards = [];
 let currentIndex = 0;
@@ -1343,6 +1688,41 @@ let sessionLevelName = '';
 // Progress tracking: { mode_level: { correct, wrong, total } }
 let progress = JSON.parse(localStorage.getItem('cs_progress') || '{}');
 
+// Per-word stats: { "mode|level|front": { front, back, tag, mode, level, correct, wrong, lastSeen } }
+let wordStats = JSON.parse(localStorage.getItem('cs_word_stats') || '{}');
+let weakThreshold = Number(localStorage.getItem('cs_weak_threshold') || 50);
+let wordFilter = 'all';
+
+function cardIdOf(mode, level, front) {
+  return mode + '|' + level + '|' + front;
+}
+
+function recordAnswer(card, mode, level, correct) {
+  if (!card || !card.front) return;
+  const id = cardIdOf(mode, level, card.front);
+  const s = wordStats[id] || { front: card.front, back: card.back, tag: card.tag, mode, level, correct: 0, wrong: 0, lastSeen: 0 };
+  s.back = card.back;
+  s.tag = card.tag;
+  s.mode = mode;
+  s.level = level;
+  if (correct) s.correct++; else s.wrong++;
+  s.lastSeen = Date.now();
+  wordStats[id] = s;
+  localStorage.setItem('cs_word_stats', JSON.stringify(wordStats));
+}
+
+function cardRate(s) {
+  const t = s.correct + s.wrong;
+  return t === 0 ? null : s.correct / t;
+}
+
+function weakWordList() {
+  return Object.values(wordStats).filter(function(s) {
+    const r = cardRate(s);
+    return r !== null && r * 100 < weakThreshold;
+  });
+}
+
 // ══════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════
@@ -1353,6 +1733,7 @@ function init() {
 
 function setMode(mode) {
   currentMode = mode;
+  lastRegularMode = mode;
   document.querySelectorAll('.mode-tab').forEach((t, i) => {
     const modes = ['translation', 'terms', 'abbr'];
     t.classList.toggle('active', modes[i] === mode);
@@ -1475,6 +1856,13 @@ function answer(correct) {
 
   const overlay = document.getElementById('swipeOverlay');
   const wrap = document.getElementById('cardWrap');
+  const card = currentCards[currentIndex];
+
+  // Record per-word stat. For weak sessions, use the card's origin mode/level
+  // (captured when we built the weak list) so stats keep aggregating to the same id.
+  const statMode = card && card.originMode ? card.originMode : currentMode;
+  const statLevel = card && (card.originLevel !== undefined) ? card.originLevel : currentLevel;
+  recordAnswer(card, statMode, statLevel, correct);
 
   if (correct) {
     correctCount++;
@@ -1528,10 +1916,12 @@ function showResults() {
   const total = currentCards.length;
   const pct = Math.round((correctCount / total) * 100);
 
-  // Save progress
-  const key = `${currentMode}_${currentLevel}`;
-  progress[key] = { correct: correctCount, wrong: wrongCount, total };
-  localStorage.setItem('cs_progress', JSON.stringify(progress));
+  // Save progress — only for regular level sessions (weak practice has no level).
+  if (currentMode !== 'weak') {
+    const key = `${currentMode}_${currentLevel}`;
+    progress[key] = { correct: correctCount, wrong: wrongCount, total };
+    localStorage.setItem('cs_progress', JSON.stringify(progress));
+  }
 
   // === ИЗМЕНЕНИЕ: Показываем картинку вместо текста ===
   const resultsTitleEl = document.getElementById('resultsTitle');
@@ -1582,10 +1972,22 @@ function showResults() {
 }
 
 function retryLevel() {
-  startLevel(currentMode, currentLevel);
+  if (currentMode === 'weak') {
+    startWeakPractice();
+  } else {
+    startLevel(currentMode, currentLevel);
+  }
 }
 
 function goMenu() {
+  // If we're returning from a weak session, restore the last real mode tab.
+  if (currentMode === 'weak') {
+    currentMode = lastRegularMode;
+    document.querySelectorAll('.mode-tab').forEach((t, i) => {
+      const modes = ['translation', 'terms', 'abbr'];
+      t.classList.toggle('active', modes[i] === currentMode);
+    });
+  }
   renderLevels();
   showScreen('menu');
 }
@@ -1595,6 +1997,176 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
 }
 
+// ══════════════════════════════════════════════
+//  THEME
+// ══════════════════════════════════════════════
+
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme') || 'light';
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('cs_theme', next);
+  updateThemeIcon();
+}
+
+function updateThemeIcon() {
+  const t = document.documentElement.getAttribute('data-theme') || 'light';
+  const btn = document.getElementById('themeBtn');
+  if (btn) btn.textContent = t === 'dark' ? '☀' : '🌙';
+}
+
+// ══════════════════════════════════════════════
+//  PROFILE
+// ══════════════════════════════════════════════
+
+function openProfile() {
+  renderProfile();
+  showScreen('profile');
+}
+
+function setWordFilter(f) {
+  wordFilter = f;
+  document.querySelectorAll('.word-filter').forEach(b => {
+    b.classList.toggle('active', b.dataset.filter === f);
+  });
+  renderWordList();
+}
+
+function onThresholdChange() {
+  const slider = document.getElementById('thresholdSlider');
+  weakThreshold = Number(slider.value);
+  localStorage.setItem('cs_weak_threshold', String(weakThreshold));
+  document.getElementById('thresholdValue').textContent = '< ' + weakThreshold + '%';
+  updateWeakButton();
+  renderWordList();
+  renderProfileSummary();
+}
+
+function updateWeakButton() {
+  const count = weakWordList().length;
+  const btn = document.getElementById('weakStartBtn');
+  btn.textContent = 'Тренировать (' + count + ' ' + pluralWord(count) + ')';
+  btn.disabled = count === 0;
+}
+
+function pluralWord(n) {
+  const n10 = n % 10, n100 = n % 100;
+  if (n10 === 1 && n100 !== 11) return 'слово';
+  if (n10 >= 2 && n10 <= 4 && (n100 < 12 || n100 > 14)) return 'слова';
+  return 'слов';
+}
+
+function renderProfile() {
+  const slider = document.getElementById('thresholdSlider');
+  slider.value = String(weakThreshold);
+  document.getElementById('thresholdValue').textContent = '< ' + weakThreshold + '%';
+  renderProfileSummary();
+  updateWeakButton();
+  renderWordList();
+}
+
+function renderProfileSummary() {
+  const all = Object.values(wordStats);
+  const totalWords = all.length;
+  let attempts = 0, correct = 0;
+  all.forEach(s => { attempts += s.correct + s.wrong; correct += s.correct; });
+  const avg = attempts > 0 ? Math.round((correct / attempts) * 100) : null;
+
+  document.getElementById('sumTotalWords').textContent = totalWords;
+  document.getElementById('sumAttempts').textContent = attempts;
+  document.getElementById('sumAvgRate').textContent = avg === null ? '—' : (avg + '%');
+  document.getElementById('sumWeakCount').textContent = weakWordList().length;
+}
+
+function rateClass(pct) {
+  if (pct < 50) return 'low';
+  if (pct < 80) return 'mid';
+  return 'high';
+}
+
+function modeLabel(mode) {
+  if (mode === 'translation') return 'перевод';
+  if (mode === 'terms') return 'термин';
+  if (mode === 'abbr') return 'аббр.';
+  return mode || '';
+}
+
+function renderWordList() {
+  const list = document.getElementById('wordList');
+  let items = Object.values(wordStats);
+  if (wordFilter !== 'all') {
+    items = items.filter(s => s.mode === wordFilter);
+  }
+  items.sort((a, b) => {
+    const ra = cardRate(a) ?? 1;
+    const rb = cardRate(b) ?? 1;
+    if (ra !== rb) return ra - rb;
+    return (b.lastSeen || 0) - (a.lastSeen || 0);
+  });
+
+  if (!items.length) {
+    list.innerHTML = '<div class="word-empty">Пока нет данных. Пройдите хотя бы одну тему.</div>';
+    return;
+  }
+
+  list.innerHTML = items.map(s => {
+    const r = cardRate(s);
+    const pct = r === null ? 0 : Math.round(r * 100);
+    const total = s.correct + s.wrong;
+    return (
+      '<div class="word-row">' +
+        '<div class="w-front">' + escapeHtml(s.front) + '</div>' +
+        '<div class="w-back">' + escapeHtml(s.back || '') + '</div>' +
+        '<div class="w-count">' + s.correct + '/' + total + ' · ' + escapeHtml(modeLabel(s.mode)) + '</div>' +
+        '<div class="w-rate ' + rateClass(pct) + '">' + pct + '%</div>' +
+      '</div>'
+    );
+  }).join('');
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function resetStats() {
+  if (!confirm('Удалить всю статистику по словам? Это действие нельзя отменить.')) return;
+  wordStats = {};
+  localStorage.removeItem('cs_word_stats');
+  renderProfile();
+}
+
+// ══════════════════════════════════════════════
+//  WEAK PRACTICE
+// ══════════════════════════════════════════════
+
+function startWeakPractice() {
+  const weak = weakWordList();
+  if (!weak.length) return;
+
+  currentMode = 'weak';
+  currentLevel = 'weak';
+  sessionLevelName = 'Слабые слова (<' + weakThreshold + '%)';
+
+  currentCards = shuffle(weak.map(s => ({
+    front: s.front,
+    back: s.back,
+    tag: s.tag || '',
+    originMode: s.mode,
+    originLevel: s.level
+  })));
+
+  currentIndex = 0;
+  correctCount = 0;
+  wrongCount = 0;
+
+  showScreen('study');
+  document.getElementById('studyLevelName').textContent = sessionLevelName;
+  renderCard();
+}
+
+updateThemeIcon();
 init();
 </script>
 </body>
